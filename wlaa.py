@@ -8,6 +8,7 @@ import time
 import datetime
 import pathlib
 import os
+import platform
 
 # SQL injection
 sqli = [
@@ -533,7 +534,8 @@ class weblogaudit:
             print("Number of CRLF Injection Payloads Found: " + str(data.count("CRLF Injection")), file=f)
             print("Number of Abnormal HTTP request Payloads Found: " + str(data.count("Abnormal HTTP request")), file=f)
             print("Number of Local File Inclusion Payloads Found: " + str(data.count("Local File Inclusion")), file=f)
-            print("Number of Web Vulnerable Scanner Payloads Found: " + str(data.count("Web Vulnerable Scanner")), file=f)
+            print("Number of Web Vulnerable Scanner Payloads Found: " + str(data.count("Web Vulnerable Scanner")),
+                  file=f)
             print("Number of Zero Day Vulnerable Payloads Found: " + str(data.count("Zero Day Vulnerable")), file=f)
             print("Number of Webshell Invasion Payloads Found: " + str(data.count("Webshell Invasion")), file=f)
             print("\nsearch the Payloads to locate,here are some tips for find the location.", file=f)
@@ -619,7 +621,10 @@ if __name__ == "__main__":
         print("\nReport named :", report, "\nThe location :", pathlib.Path.cwd())
         print("Windows: Ctrl+ F,type:SQL injection to locate more details")
         print("Linux: more report-202101221717-XXX.txt| grep SQL injection")
-        print(os.system("pause"))  # fix the bug for exe in windows when the program finished  without any promotion .
+        # fix the bug for exe in windows when the program finished  without any promotion.
+        if platform.system() == "Windows":
+            print(os.system("pause"))
     else:
-        print("Invalid path, please run again.")
-        print(os.system("pause"))  # fix the bug for exe in windows when the program finished  without any promotion .
+        if platform.system() == "Windows":
+            print("Invalid path, please run again.")
+            print(os.system("pause"))
