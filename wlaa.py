@@ -598,6 +598,12 @@ def attacktypeword():
         weblogaudit().logaudit(keyword, "Webshell Invasion", logfile)
 
 
+def systemtype():
+    # fix the bug for exe in windows when the program finished  without any promotion.
+    if platform.system() == "Windows":
+        print(os.system("pause"))
+
+
 if __name__ == "__main__":
     print("###########################################################")
     print(" For finding attack, analyze the web access log such as nginx,openresty,tomcat,apache,iis.")
@@ -621,10 +627,7 @@ if __name__ == "__main__":
         print("\nReport named :", report, "\nThe location :", pathlib.Path.cwd())
         print("Windows: Ctrl+ F,type:SQL injection to locate more details")
         print("Linux: more report-202101221717-XXX.txt| grep SQL injection")
-        # fix the bug for exe in windows when the program finished  without any promotion.
-        if platform.system() == "Windows":
-            print(os.system("pause"))
+        systemtype()
     else:
-        if platform.system() == "Windows":
-            print("Invalid path, please run again.")
-            print(os.system("pause"))
+        print("Invalid path, please run again.")
+        systemtype()
