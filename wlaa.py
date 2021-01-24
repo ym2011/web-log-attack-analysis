@@ -9,6 +9,7 @@ import datetime
 import pathlib
 import os
 import platform
+import concurrent.futures
 
 # SQL injection
 sqli = [
@@ -504,8 +505,6 @@ webshell = [
 timeStamp = datetime.datetime.now().strftime('%Y%m%d%H%M' + '-%S%f')
 report = "report-" + timeStamp + ".txt"
 
-start_time = time.perf_counter()
-
 
 class weblogaudit:
     def logaudit(self, keyword, attacktype, log):
@@ -613,6 +612,7 @@ if __name__ == "__main__":
     print("Enter your webserver access log path:")
     inputvalue = input("\n>>>")
     my_file = pathlib.Path(inputvalue)
+    start_time = time.perf_counter()
     if my_file.is_file():
         logfile = inputvalue
         print("analyze Log file " + logfile + " ...")
@@ -620,6 +620,8 @@ if __name__ == "__main__":
         sendkeyword = weblogaudit()
         # analyze the web attack in the logs.
         attacktypeword()
+        #with concurrent.futures.ThreadPoolExecutor() as executor:
+            #executor.submit(attacktypeword())
         # Summarize and log to report
         sendkeyword.summarize()
         end_time = time.perf_counter()
