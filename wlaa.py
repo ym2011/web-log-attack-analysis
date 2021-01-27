@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 # coding=utf-8
 # authors: ym2011
-# time: 2021-01-22
-# version: 1.0
+# time: 2021-01-26
+# version: 1.1
 
 import time
 import datetime
 import pathlib
 import os
 import platform
-import concurrent.futures
 
 # SQL injection
 sqli = [
@@ -284,7 +283,6 @@ Command_Injection = [
     ';system(',
     '\n/bin/ls',
     '\nid',
-    '\nid;',
     '`id`',
     '%26%20ping%20-i',
     '%26%20ping%20-n',
@@ -299,8 +297,6 @@ Command_Injection = [
     '%2Fbin%2Fsh',
     '%2Fbin%2Fbash',
     '%2Fusr%2Fbin%2Fid',
-    '%2Fetc%2Fpasswd',
-    '%2Fetc%2Fshadow',
     '%7Cid',
     '%3Bid',
     '%3Bnetstat',
@@ -338,8 +334,6 @@ Command_Injection = [
     '$_SERVER',
     '%24_SERVER',
     ';%20pwd',
-    'phpinfo%28%29',
-    'phpversion%28%29'
 
 ]
 
@@ -448,7 +442,7 @@ ldap_injection = [
 ]
 
 # Abnormal HTTP request
-AHr = [
+ahr = [
     'PUT',
     'TRACE',
     'OPTIONS',
@@ -468,7 +462,6 @@ lfi = [
 
 # Web Vulnerable Scanner
 scanner = [
-    'WCRTESTINPUT000000',
     'acunetix',
     'acunetix-wvs',
     'Appscan',
@@ -478,15 +471,14 @@ scanner = [
     'goby',
     'Openvas',
     'vul_webscan',
-    'bappsec'
 ]
 
 # Zero Day Vulnerable
 zero_day = [
     'dnslog',
     'java.lang.Runtime',
-    'struts',
-    'root:x',
+    '@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS',
+    'xwork2.dispatcher.HttpServletRequest',
     'java.lang.Class'
 
 ]
@@ -502,8 +494,9 @@ webshell = [
     'hello.jsp',
 ]
 
-timeStamp = datetime.datetime.now().strftime('%Y%m%d%H%M' + '-%S%f')
-report = "report-" + timeStamp + ".txt"
+# timeStamp = datetime.datetime.now().strftime('%Y%m%d%H%M' + '-%S%f')
+timenow = datetime.datetime.now().strftime('%Y%m%d%H%M')
+report = "report-" + timenow + ".txt"
 
 
 class weblogaudit:
@@ -514,6 +507,59 @@ class weblogaudit:
             if keyword in i:
                 r.write("\nPossible " + attacktype + " web payloads found:\n")
                 r.write(i)
+
+    def attack(self):
+        # SQL-Injection Payloads
+        for keyword in sqli:
+            weblogaudit().logaudit(keyword, "SQL injection", logfile)
+        
+        # Cross-Site-Scripting(XSS) Payloads
+        for keyword in xss:
+            weblogaudit().logaudit(keyword, "Cross Site Scripting(XSS)", logfile)
+
+        # sensitive file download Payloads
+        for keyword in sfd:
+            weblogaudit().logaudit(keyword, "Sensitive File Download", logfile)
+
+        # Directory-Traversal Payloads
+        for keyword in Directory_Traversal:
+            weblogaudit().logaudit(keyword, "Directory Traversal", logfile)
+
+        # Command-Injection Payloads
+        for keyword in Command_Injection:
+            weblogaudit().logaudit(keyword, "Command Injection", logfile)
+
+        # LDAP-Injection Payloads
+        for keyword in ldap_injection:
+            weblogaudit().logaudit(keyword, "LDAP Injection", logfile)
+
+        # XPATH-Injection Payloads
+        for keyword in xpath:
+            weblogaudit().logaudit(keyword, "XPATH Injection", logfile)
+
+        # CRLF-Injection Payloads
+        for keyword in crlf:
+            weblogaudit().logaudit(keyword, "CRLF Injection", logfile)
+
+        # Abnormal HTTP Request Payloads
+        for keyword in ahr:
+            weblogaudit().logaudit(keyword, "Abnormal HTTP Request", logfile)
+
+        # Local File Inclusion Payloads
+        for keyword in lfi:
+            weblogaudit().logaudit(keyword, "Local File Inclusion", logfile)
+
+        # Web Vulnerable Scanner Payloads
+        for keyword in scanner:
+            weblogaudit().logaudit(keyword, "Web Vulnerable Scanner", logfile)
+
+        # Zero Day Vulnerable Payloads
+        for keyword in zero_day:
+            weblogaudit().logaudit(keyword, "Zero Day Vulnerable", logfile)
+
+        # Webshell Invasion Payloads
+        for keyword in webshell:
+            weblogaudit().logaudit(keyword, "Webshell Invasion", logfile)
 
     def summarize(self):
         with open(report, mode='r+', encoding='utf-8') as f:
@@ -543,60 +589,6 @@ class weblogaudit:
             f.write(data)
 
 
-def attacktypeword():
-    # SQL-Injection Payloads
-    for keyword in sqli:
-        weblogaudit().logaudit(keyword, "SQL injection", logfile)
-
-    # Cross-Site-Scripting(XSS) Payloads
-    for keyword in xss:
-        weblogaudit().logaudit(keyword, "Cross Site Scripting(XSS)", logfile)
-
-    # sensitive file download Payloads
-    for keyword in sfd:
-        weblogaudit().logaudit(keyword, "Sensitive File Download", logfile)
-
-    # Directory-Traversal Payloads
-    for keyword in Directory_Traversal:
-        weblogaudit().logaudit(keyword, "Directory Traversal", logfile)
-
-    # Command-Injection Payloads
-    for keyword in Command_Injection:
-        weblogaudit().logaudit(keyword, "Command Injection", logfile)
-
-    # LDAP-Injection Payloads
-    for keyword in ldap_injection:
-        weblogaudit().logaudit(keyword, "LDAP Injection", logfile)
-
-    # XPATH-Injection Payloads
-    for keyword in xpath:
-        weblogaudit().logaudit(keyword, "XPATH Injection", logfile)
-
-    # CRLF-Injection Payloads
-    for keyword in crlf:
-        weblogaudit().logaudit(keyword, "CRLF Injection", logfile)
-
-    # Abnormal HTTP Request Payloads
-    for keyword in AHr:
-        weblogaudit().logaudit(keyword, "Abnormal HTTP Request", logfile)
-
-    # Local File Inclusion Payloads
-    for keyword in lfi:
-        weblogaudit().logaudit(keyword, "Local File Inclusion", logfile)
-
-    # Web Vulnerable Scanner Payloads
-    for keyword in scanner:
-        weblogaudit().logaudit(keyword, "Web Vulnerable Scanner", logfile)
-
-    # Zero Day Vulnerable Payloads
-    for keyword in zero_day:
-        weblogaudit().logaudit(keyword, "Zero Day Vulnerable", logfile)
-
-    # Webshell Invasion Payloads
-    for keyword in webshell:
-        weblogaudit().logaudit(keyword, "Webshell Invasion", logfile)
-
-
 def systemtype():
     # fix the bug for exe in windows when the program finished  without any promotion.
     if platform.system() == "Windows":
@@ -610,25 +602,22 @@ if __name__ == "__main__":
     print(" Author:ym2011")
     print("###########################################################")
     print("Enter your webserver access log path:")
-    inputvalue = input("\n>>>")
+    inputvalue = input(">>>")
     my_file = pathlib.Path(inputvalue)
-    start_time = time.perf_counter()
     if my_file.is_file():
         logfile = inputvalue
         print("analyze Log file " + logfile + " ...")
         print("please wait for a while, maybe seconds or minutes .....")
         sendkeyword = weblogaudit()
+        start_time = time.perf_counter()
         # analyze the web attack in the logs.
-        attacktypeword()
-        #with concurrent.futures.ThreadPoolExecutor() as executor:
-            #executor.submit(attacktypeword())
-        # Summarize and log to report
-        sendkeyword.summarize()
+        sendkeyword.attack()
         end_time = time.perf_counter()
+        sendkeyword.summarize()
         print("it costs time :", int(end_time - start_time), "s")
         print("\nReport named :", report, "\nThe location :", pathlib.Path.cwd())
         print("Windows: Ctrl+ F,type:SQL injection to locate more details")
-        print("Linux: more report-202101221717-XXX.txt| grep SQL injection")
+        print("Linux: more report-202101221717.txt| grep SQL injection")
         systemtype()
     else:
         print("Invalid path, please run again.")
