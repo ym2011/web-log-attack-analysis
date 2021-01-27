@@ -26,9 +26,11 @@ current attack payloads are supported as follows:
 2) python wlaa.py
 3) type the path where your web access log file locates
 4) do web-log-attack-analysis and wait for the result.
-5) Search the Payloads to locate,here are some tips for find the location.
-Windows: Ctrl+ F,type:SQL injection to locate more details, where it's attacked.
-Linux: more report-202101221717-07895239.txt| grep SQL injection
+   
+# result and find out more
+1) Search the Payloads to locate,here are some tips for find the location.
+2)Windows: Ctrl+ F,type:SQL injection to locate more details, where it's attacked.
+3)Linux: more report-202101221717-07895239.txt| grep SQL injection
 
 ```
 `**** Summary of Inspection ****`
@@ -40,4 +42,3 @@ Linux: more report-202101221717-07895239.txt| grep SQL injection
 `Windows: Ctrl+ F,type:SQL injection to locate more details, where it's attacked.`
 `Linux: more report-202101221717-07895239.txt| grep SQL injection`
 ```
-
