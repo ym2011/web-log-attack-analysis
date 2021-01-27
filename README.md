@@ -2,7 +2,7 @@
 A python based security analyse tool that can find various injection payloads from web server and application logs
 
 # Description
-The tool can be used to find various web injection payloads from any webserver logs when fed into its input. This is a redistribution for the source coe : https://github.com/Sumeet-R/L7-Inspector
+The tool can be used to find various web injection payloads from any webserver logs when fed into its input. 
 
 here are some improvement as  follows:
 1) add more attack payloads and adjust it into the code instead of unzipping payloads.zip.
