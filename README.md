@@ -1,5 +1,7 @@
 # web log attack analysis
-A python based security analyse tool that can find various injection payloads from web server and application logs
+A python based security analyse tool that can find various injection payloads from web server and application logs 
+
+The blog : https://blog.csdn.net/qq_29277155/article/details/107236416
 
 # Description
 The tool can be used to find various web injection payloads from any webserver logs when fed into its input. 
@@ -41,26 +43,11 @@ Linux: more report-202101221717-07895239.txt| grep SQL injection
 `The Report name:  report-202101221748-24926847.txt`
 `The file directory: C:\web-log-attack-analysis`
 `Number of SQL injection Payloads Found: 1`
-`Number of Cross Site Scripting(XSS) Payloads Found: 1`
-`Number of Sensitive File Download Payloads Found: 1`
-`Number of LDAP Injection Payloads Found: 0`
-`Number of Directory Traversal Payloads Found: 2`
-`Number of Command Injection Payloads Found: 0`
-`Number of XPATH Injection Payloads Found: 0`
-`Number of CRLF Injection Payloads Found: 0`
-`Number of Abnormal HTTP request Payloads Found: 0`
-`Number of Local File Inclusion Payloads Found: 3`
-`Number of Web Vulnerable Scanner Payloads Found: 1`
-`Number of Zero Day Vulnerable Payloads Found: 0`
-`Number of Webshell Invasion Payloads Found: 0`
+`Number of Cross Site Scripting(XSS) Payloads Found: 2`
 
 `search the Payloads to locate,here are some tips for find the location.`
 `Windows: Ctrl+ F,type:SQL injection to locate more details, where it's attacked.`
 `Linux: more report-202101221717-07895239.txt| grep SQL injection`
-
-`Possible SQL injection web payloads found:`
-`10.10.4.88 - - [10/Jul/2020:15:37:56 +0800] "GET /dashboard/?param=-1+UNION+SELECT+GROUP_CONCAT(table_name)+FROM+information_schema.tables HTTP/1.1" 200 7576 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.21 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.21"`
-
 
 ```
 
