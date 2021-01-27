@@ -599,7 +599,7 @@ if __name__ == "__main__":
     print("###########################################################")
     print(" For finding attack, analyze the web access log such as nginx,openresty,tomcat,apache,iis.")
     print(" know if someone tried to infiltrate your exposed web server!!!")
-    print(" Author:ym2011")
+    print(" Author:ym2011 , version: v1.1")
     print("###########################################################")
     print("Enter your webserver access log path:")
     inputvalue = input(">>>")
