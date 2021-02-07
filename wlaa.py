@@ -1,18 +1,19 @@
 #!/usr/bin/python3
 # coding=utf-8
 # authors: ym2011
-# time: 2021-01-26
-# version: 1.1
+# time: 2021-02-05
+# version: 1.2
 
-import time
 import datetime
-import pathlib
 import os
+import pathlib
 import platform
+import time
 
 # SQL injection
-sqli = [
+sqi = [
     'SELECT%20',
+    'select%20',
     '%20union%20',
     'concat%28',
     'concat(',
@@ -263,15 +264,14 @@ sfd = [
     '.mdb',
     '.nsf',
     '.java',
-    'bash',
+    '.bash',
     'login.inc.php',
     'config.inc.php'
-
 ]
 
 # Command Injection
-Command_Injection = [
-    '\cmd.exe',
+commandi = [
+    'cmd.exe',
     '/bin/sh',
     '/bin/bash',
     '/usr/bin/id',
@@ -334,6 +334,8 @@ Command_Injection = [
     '$_SERVER',
     '%24_SERVER',
     ';%20pwd',
+    'xp_cmdshell',
+    'shell_exec'
 
 ]
 
@@ -402,7 +404,7 @@ crlf = [
 ]
 
 # Directory Traversal
-Directory_Traversal = [
+directory_traversal = [
     '/..',
     '%2F..',
     '%2f%2e%2e'
@@ -420,8 +422,8 @@ xpath = [
     '[position()='
 ]
 
-# ldap injection
-ldap_injection = [
+# Ldap Injection
+ldap = [
     'C=N',
     '(uid=*',
     '%28uid%3D%2A',
@@ -462,6 +464,7 @@ lfi = [
 
 # Web Vulnerable Scanner
 scanner = [
+    'sqlmap',
     'acunetix',
     'acunetix-wvs',
     'Appscan',
@@ -480,7 +483,6 @@ zero_day = [
     '@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS',
     'xwork2.dispatcher.HttpServletRequest',
     'java.lang.Class'
-
 ]
 
 # Webshell Invasion
@@ -494,99 +496,64 @@ webshell = [
     'hello.jsp',
 ]
 
-# timeStamp = datetime.datetime.now().strftime('%Y%m%d%H%M' + '-%S%f')
+# 字典中存储列表
+attacktype = {
+    'SQL injection': sqi,
+    'Cross Site Scripting(XSS)': xss,
+    'Sensitive File Download': sfd,
+    'Directory Traversal': directory_traversal,
+    'Command Injection': commandi,
+    'LDAP Injection': ldap,
+    'XPATH Injection': xpath,
+    'CRLF Injection': crlf,
+    'Abnormal HTTP Request': ahr,
+    'Local File Inclusion': lfi,
+    'Web Vulnerable Scanner': scanner,
+    'Zero Day Vulnerable': zero_day,
+    'Webshell Invasion': webshell,
+    }
+
 timenow = datetime.datetime.now().strftime('%Y%m%d%H%M')
 report = "report-" + timenow + ".txt"
 
 
-class weblogaudit:
-    def logaudit(self, keyword, attacktype, log):
-        f = open(log, mode='r', encoding='utf-8')
-        r = open(report, "a")
-        for i in f.readlines():
-            if keyword in i:
-                r.write("\nPossible " + attacktype + " web payloads found:\n")
-                r.write(i)
+def logaudit(log):
+    f = open(log, mode='r', encoding='utf-8')
+    r = open(report, "a")
+    for i in f.readlines():
+        for k, j in attacktype.items():  # .itmes()，它返回一个键值对列表
+            for js in j:
+                if js in i:
+                    r.write("\nPossible " + k + " web payloads found:\n")
+                    r.write(i)
 
-    def attack(self):
-        # SQL-Injection Payloads
-        for keyword in sqli:
-            weblogaudit().logaudit(keyword, "SQL injection", logfile)
-        
-        # Cross-Site-Scripting(XSS) Payloads
-        for keyword in xss:
-            weblogaudit().logaudit(keyword, "Cross Site Scripting(XSS)", logfile)
 
-        # sensitive file download Payloads
-        for keyword in sfd:
-            weblogaudit().logaudit(keyword, "Sensitive File Download", logfile)
-
-        # Directory-Traversal Payloads
-        for keyword in Directory_Traversal:
-            weblogaudit().logaudit(keyword, "Directory Traversal", logfile)
-
-        # Command-Injection Payloads
-        for keyword in Command_Injection:
-            weblogaudit().logaudit(keyword, "Command Injection", logfile)
-
-        # LDAP-Injection Payloads
-        for keyword in ldap_injection:
-            weblogaudit().logaudit(keyword, "LDAP Injection", logfile)
-
-        # XPATH-Injection Payloads
-        for keyword in xpath:
-            weblogaudit().logaudit(keyword, "XPATH Injection", logfile)
-
-        # CRLF-Injection Payloads
-        for keyword in crlf:
-            weblogaudit().logaudit(keyword, "CRLF Injection", logfile)
-
-        # Abnormal HTTP Request Payloads
-        for keyword in ahr:
-            weblogaudit().logaudit(keyword, "Abnormal HTTP Request", logfile)
-
-        # Local File Inclusion Payloads
-        for keyword in lfi:
-            weblogaudit().logaudit(keyword, "Local File Inclusion", logfile)
-
-        # Web Vulnerable Scanner Payloads
-        for keyword in scanner:
-            weblogaudit().logaudit(keyword, "Web Vulnerable Scanner", logfile)
-
-        # Zero Day Vulnerable Payloads
-        for keyword in zero_day:
-            weblogaudit().logaudit(keyword, "Zero Day Vulnerable", logfile)
-
-        # Webshell Invasion Payloads
-        for keyword in webshell:
-            weblogaudit().logaudit(keyword, "Webshell Invasion", logfile)
-
-    def summarize(self):
-        with open(report, mode='r+', encoding='utf-8') as f:
-            data = f.read()
-            f.seek(0)  # move the index to the head, in order to insert summary into head of the file.
-            print("**** Summary of Inspection ****", file=f)
-            print("The Report name: ", report, "\nThe file directory:", pathlib.Path.cwd(), file=f)
-            print("Number of SQL injection Payloads Found: " + str(data.count("SQL injection")), file=f)
-            print("Number of Cross Site Scripting(XSS) Payloads Found: " + str(data.count("Cross Site Scripting(XSS)")),
-                  file=f)
-            print("Number of Sensitive File Download Payloads Found: " + str(data.count("Sensitive File Download")),
-                  file=f)
-            print("Number of LDAP Injection Payloads Found: " + str(data.count("LDAP Injection")), file=f)
-            print("Number of Directory Traversal Payloads Found: " + str(data.count("Directory Traversal")), file=f)
-            print("Number of Command Injection Payloads Found: " + str(data.count("Command Injection")), file=f)
-            print("Number of XPATH Injection Payloads Found: " + str(data.count("XPATH Injection")), file=f)
-            print("Number of CRLF Injection Payloads Found: " + str(data.count("CRLF Injection")), file=f)
-            print("Number of Abnormal HTTP request Payloads Found: " + str(data.count("Abnormal HTTP request")), file=f)
-            print("Number of Local File Inclusion Payloads Found: " + str(data.count("Local File Inclusion")), file=f)
-            print("Number of Web Vulnerable Scanner Payloads Found: " + str(data.count("Web Vulnerable Scanner")),
-                  file=f)
-            print("Number of Zero Day Vulnerable Payloads Found: " + str(data.count("Zero Day Vulnerable")), file=f)
-            print("Number of Webshell Invasion Payloads Found: " + str(data.count("Webshell Invasion")), file=f)
-            print("\nsearch the Payloads to locate,here are some tips for find the location.", file=f)
-            print("Windows: Ctrl+ F, type:SQL injection to locate more details", file=f)
-            print("Linux: more report-202101221717-07895239.txt| grep SQL injection", file=f)
-            f.write(data)
+def summarize():
+    with open(report, mode='r+', encoding='utf-8') as f:
+        data = f.read()
+        f.seek(0)  # move the index to the head, in order to insert summary into head of the file.
+        print("**** Summary of Inspection ****", file=f)
+        print("The Report name: ", report, "\nThe file directory:", pathlib.Path.cwd(), file=f)
+        print("Number of SQL injection Payloads Found: ",  data.count("SQL injection"), file=f)
+        print("Number of Cross Site Scripting(XSS) Payloads Found: " + str(data.count("Cross Site Scripting(XSS)")),
+              file=f)
+        print("Number of Sensitive File Download Payloads Found: " + str(data.count("Sensitive File Download")),
+              file=f)
+        print("Number of LDAP Injection Payloads Found: " + str(data.count("LDAP Injection")), file=f)
+        print("Number of Directory Traversal Payloads Found: " + str(data.count("Directory Traversal")), file=f)
+        print("Number of Command Injection Payloads Found: " + str(data.count("Command Injection")), file=f)
+        print("Number of XPATH Injection Payloads Found: " + str(data.count("XPATH Injection")), file=f)
+        print("Number of CRLF Injection Payloads Found: " + str(data.count("CRLF Injection")), file=f)
+        print("Number of Abnormal HTTP request Payloads Found: " + str(data.count("Abnormal HTTP request")), file=f)
+        print("Number of Local File Inclusion Payloads Found: " + str(data.count("Local File Inclusion")), file=f)
+        print("Number of Web Vulnerable Scanner Payloads Found: " + str(data.count("Web Vulnerable Scanner")),
+              file=f)
+        print("Number of Zero Day Vulnerable Payloads Found: " + str(data.count("Zero Day Vulnerable")), file=f)
+        print("Number of Webshell Invasion Payloads Found: " + str(data.count("Webshell Invasion")), file=f)
+        print("\nsearch the Payloads to locate,here are some tips for find the location.", file=f)
+        print("Windows: Ctrl+ F, type:SQL injection to locate more details", file=f)
+        print("Linux: more report-202101221717-07895239.txt| grep SQL injection", file=f)
+        f.write(data)
 
 
 def systemtype():
@@ -599,7 +566,7 @@ if __name__ == "__main__":
     print("###########################################################")
     print(" For finding attack, analyze the web access log such as nginx,openresty,tomcat,apache,iis.")
     print(" know if someone tried to infiltrate your exposed web server!!!")
-    print(" Author:ym2011 , version: v1.1")
+    print(" Author:ym2011, version: v1.2")
     print("###########################################################")
     print("Enter your webserver access log path:")
     inputvalue = input(">>>")
@@ -608,16 +575,13 @@ if __name__ == "__main__":
         logfile = inputvalue
         print("analyze Log file " + logfile + " ...")
         print("please wait for a while, maybe seconds or minutes .....")
-        sendkeyword = weblogaudit()
         start_time = time.perf_counter()
         # analyze the web attack in the logs.
-        sendkeyword.attack()
+        logaudit(logfile)
         end_time = time.perf_counter()
-        sendkeyword.summarize()
-        print("it costs time :", int(end_time - start_time), "s")
+        summarize()
+        print("Finished, it costs :", int(end_time - start_time), "s")
         print("\nReport named :", report, "\nThe location :", pathlib.Path.cwd())
-        print("Windows: Ctrl+ F,type:SQL injection to locate more details")
-        print("Linux: more report-202101221717.txt| grep SQL injection")
         systemtype()
     else:
         print("Invalid path, please run again.")
