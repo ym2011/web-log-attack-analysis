@@ -1,14 +1,16 @@
 #!/usr/bin/python3
 # coding=utf-8
 # authors: ym2011
-# time: 2021-02-05
-# version: 1.2
+# time: 2021-05-28
+# version: 1.3
 
 import datetime
 import os
 import pathlib
 import platform
+import re
 import time
+
 
 # SQL injection
 sqi = [
@@ -511,7 +513,7 @@ attacktype = {
     'Web Vulnerable Scanner': scanner,
     'Zero Day Vulnerable': zero_day,
     'Webshell Invasion': webshell,
-    }
+}
 
 timenow = datetime.datetime.now().strftime('%Y%m%d%H%M')
 report = "report-" + timenow + ".txt"
@@ -534,7 +536,7 @@ def summarize():
         f.seek(0)  # move the index to the head, in order to insert summary into head of the file.
         print("**** Summary of Inspection ****", file=f)
         print("The Report name: ", report, "\nThe file directory:", pathlib.Path.cwd(), file=f)
-        print("Number of SQL injection Payloads Found: ",  data.count("SQL injection"), file=f)
+        print("Number of SQL injection Payloads Found: ", data.count("SQL injection"), file=f)
         print("Number of Cross Site Scripting(XSS) Payloads Found: " + str(data.count("Cross Site Scripting(XSS)")),
               file=f)
         print("Number of Sensitive File Download Payloads Found: " + str(data.count("Sensitive File Download")),
@@ -556,6 +558,30 @@ def summarize():
         f.write(data)
 
 
+def ip_account():
+    # IP：4个字符串，每个1到3个数字，由点连接
+    ipaddress = r'\.'.join([r'\d{1,3}'] * 4)
+    re_ip = re.compile(ipaddress)
+    attack_ip_list = {}
+    with open(report, mode='r+', encoding='utf-8') as f:
+        old = f.read()
+        f.seek(0)  # move the index to the head, in order to insert summary into head of the file.
+        for line in f:
+            match = re_ip.match(line)
+            if match:
+                ip = match.group()
+        # 如果IP存在增加1，否则设置点击率为1
+                attack_ip_list[ip] = attack_ip_list.get(ip, 0) + 1
+        # value取字典中前n个最大或最小值,n=10,字典转化成list，经过排序，取得前n个值
+        lists = sorted(attack_ip_list.items(), key=lambda item: item[1], reverse=True)
+        lists_top10 = lists[:10]
+        print(lists_top10)
+        f.seek(0)  # move the index to the head, in order to insert summary into head of the file.
+        print("The most frequently attack IP address and attack Count are: ", file=f)
+        print(lists_top10, file=f)
+        f.write(old)
+
+
 def systemtype():
     # fix the bug for exe in windows when the program finished  without any promotion.
     if platform.system() == "Windows":
@@ -566,7 +592,7 @@ if __name__ == "__main__":
     print("###########################################################")
     print(" For finding attack, analyze the web access log such as nginx,openresty,tomcat,apache,iis.")
     print(" know if someone tried to infiltrate your exposed web server!!!")
-    print(" Author:ym2011, version: v1.2")
+    print(" Author:ym2011, version: v1.3")
     print("###########################################################")
     print("Enter your webserver access log path:")
     inputvalue = input(">>>")
@@ -580,6 +606,7 @@ if __name__ == "__main__":
         logaudit(logfile)
         end_time = time.perf_counter()
         summarize()
+        ip_account()
         print("Finished, it costs :", int(end_time - start_time), "s")
         print("\nReport named :", report, "\nThe location :", pathlib.Path.cwd())
         systemtype()

@@ -4,9 +4,10 @@ A python based security analyse tool that can find various injection payloads fr
 The blog : https://blog.csdn.net/qq_29277155/article/details/107236416
 
 # Description
+
 The tool can be used to find various web injection payloads from any webserver logs when fed into its input，welcome to add or improve more accurate payloads.
 
-current attack payloads are supported as follows:
+# Attack payloads 
 01) SQL Injection
 02) Cross-Site-Scripting
 03) sensitive file download 
@@ -22,23 +23,22 @@ current attack payloads are supported as follows:
 13) webshell invasion detection 
 
 # Installation and run 
-1) sudo yum install python3
-2) python wlaa.py
-3) type the path where your web access log file locates
+1) sudo yum install python3.
+2) python wlaa.py or ./wlaw on linux  or wlaw.exe on windows.
+3) type the path where your web access log file locates.
 4) do web-log-attack-analysis and wait for the result.
-   
-# result and find out more
-1) Search the Payloads to locate,here are some tips for find the location.
-2)Windows: Ctrl+ F,type:SQL injection to locate more details, where it's attacked.
-3)Linux: more report-202101221717-07895239.txt| grep SQL injection
 
-```
-`**** Summary of Inspection ****`
-`The Report name:  report-202101221748-24926847.txt`
-`The file directory: C:\web-log-attack-analysis`
-`Number of SQL injection Payloads Found: 1`
+# Result and find out more
+1) see top 100 of the most frequently attack IP address. 
+2)Search the Payloads to locate,here are some tips for find the location.
+3)Windows: Ctrl+ F,type:SQL injection to locate more details, where it's attacked. 
+4)Linux: more report-202101221717-07895239.txt| grep SQL injection.  
 
-`search the Payloads to locate,here are some tips for find the location.`
-`Windows: Ctrl+ F,type:SQL injection to locate more details, where it's attacked.`
-`Linux: more report-202101221717-07895239.txt| grep SQL injection`
+```bash
+The most frequently attack IP address and attack Count are: 
+[('10.10.4.88', 2919), ('10.20.4.88', 8), ('10.10.4.80', 2), ('10.20.4.89', 1), ('10.10.4.87', 1)]
+**** Summary of Inspection ****
+The Report name:  report-202105281155.txt 
+The file directory: E:\code\web-log-attack-analysis
+Number of SQL injection Payloads Found:  358
 ```
